@@ -1,22 +1,349 @@
 openapi: 3.0.0
 info:
-  title: simple-api
-  version: 0.1.0
+  title: Smart Home API
+  description: API для управления умным домом
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Локальный сервер
 
 paths:
-  /hello:
+  /users:
     get:
+      summary: Получить список пользователей
       responses:
         '200':
-          description: A simple hello world!
+          description: Успешный ответ
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-              example: Hello from a mocked response!
-      x-kusk:
-        upstream:
-          service:
-            name: hello-world-svc
-            namespace: default
-            port: 8080
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+    post:
+      summary: Создать нового пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Пользователь успешно создан
+
+  /users/{id}:
+    get:
+      summary: Получить пользователя по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+    put:
+      summary: Обновить пользователя по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Пользователь успешно обновлен
+
+    delete:
+      summary: Удалить пользователя по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Пользователь успешно удален
+
+  /heating-systems:
+    get:
+      summary: Получить список систем отопления
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HeatingSystem'
+
+    post:
+      summary: Создать новую систему отопления
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeatingSystem'
+      responses:
+        '201':
+          description: Система отопления успешно создана
+
+  /heating-systems/{id}:
+    get:
+      summary: Получить систему отопления по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeatingSystem'
+
+    put:
+      summary: Обновить систему отопления по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeatingSystem'
+      responses:
+        '200':
+          description: Система отопления успешно обновлена
+
+    delete:
+      summary: Удалить систему отопления по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Система отопления успешно удалена
+
+  /gates:
+    get:
+      summary: Получить список ворот
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gate'
+
+    post:
+      summary: Создать новые ворота
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gate'
+      responses:
+        '201':
+          description: Ворота успешно созданы
+
+  /lights:
+    get:
+      summary: Получить список светильников
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Light'
+
+    post:
+      summary: Создать новый светильник
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Light'
+      responses:
+        '201':
+          description: Светильник успешно создан
+
+  /surveillance-cameras:
+    get:
+      summary: Получить список камер наблюдения
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+
+    post:
+      summary: Создать новую камеру наблюдения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Camera'
+      responses:
+        '201':
+          description: Камера наблюдения успешно создана
+
+  /temperature-sensors:
+    get:
+      summary: Получить список датчиков температуры
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemperatureSensor'
+
+    post:
+      summary: Создать новый датчик температуры
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemperatureSensor'
+      responses:
+        '201':
+          description: Датчик температуры успешно создан
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    HeatingSystem:
+      type: object
+      properties:
+        id:
+          type: integer
+        isOn:
+          type: boolean
+        targetTemperature:
+          type: number
+        currentTemperature:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Gate:
+      type: object
+      properties:
+        id:
+          type: integer
+        isOpen:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Light:
+      type: object
+      properties:
+        id:
+          type: integer
+        isOn:
+          type: boolean
+        brightness:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Camera:
+      type: object
+      properties:
+        id:
+          type: integer
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TemperatureSensor:
+      type: object
+      properties:
+        id:
+          type: integer
+        currentTemperature:
+          type: number
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

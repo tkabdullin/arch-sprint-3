@@ -1,0 +1,73 @@
+@startuml
+package user_package as "Сервис управления пользователямми" {
+    entity user {
+        * id
+        email
+        password
+        createdAt
+        updatedAt
+    }
+    
+    entity role {
+        * id
+        name
+    }
+    
+    entity user_role {
+        * user_id [FK]
+        * role_id [FK]
+    }
+    user --{ user_role
+    role --{ user_role
+}
+
+package heating_package as "Сервис управления отоплением" {
+    entity heating_system {
+        * id
+        isOn
+        targetTemperature
+        currentTemperature
+        createdAt
+        updatedAt
+    }
+}
+
+package gate_package as "Сервис управления воротами" {
+    entity gate {
+        * id
+        isOpen
+        createdAt
+        updatedAt
+    }
+}
+
+package light_package as "Сервис управления освещением" {
+    entity light {
+        * id
+        isOn
+        brightness
+        createdAt
+        updatedAt
+    }
+}
+
+package surveillance_package as "Сервис управления видеонаблюдением" {
+    entity camera {
+        * id
+        isActive
+        createdAt
+        updatedAt
+    }
+}
+
+package temperature_sensor_package as "Сервис датчиков температуры" {
+    entity temperature_sensor {
+        * id
+        currentTemperature
+        isActive
+        createdAt
+        updatedAt
+    }
+}
+
+@enduml

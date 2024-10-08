@@ -1,0 +1,85 @@
+@startuml
+!include ./C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "Домовладелец", "Пользователь, который управляет домом")
+Enterprise_Boundary(homesystem, "Умный Дом"){
+    Container(web_app, "Web приложение", "Web-адаптивное приложение для взаимодействия пользователей с устройствами умного дома")
+    Container(api_gw, "API gateway")
+    Container(profile_system, "Сервис управления пользователями") 
+    ' {
+    '     Container(profile_mcs, "Микросервис управления пользователями", "Обрабатывает запросы на управление пользователями", "Spring Boot")
+    '     ContainerDb(profile_mcs_db, "База данных микросервиса управления пользователями", "", "PostgeSQL")
+
+    '     Rel_L(profile_mcs, profile_mcs_db, "Запись/чтение данных")
+    ' }
+    Container(heating_system, "Сервис управления отоплением") 
+    ' {
+    '     Container(heating_mcs, "Микросервис управления отоплением", "Обрабатывает запросы на управление отоплением", "Spring Boot")
+    '     ContainerDb(heating_mcs_db, "База данных микросервиса управления отоплением", "", "PostgeSQL")
+
+    '     Rel_L(heating_mcs, heating_mcs_db, "Запись/чтение данных")
+    ' }
+    Container(gate_system, "Сервис управления отоплением") 
+    ' {
+    '     Container(gate_mcs, "Микросервис управления воротами", "Обрабатывает запросы на управление воротами", "Spring Boot")
+    '     ContainerDb(gate_mcs_db, "База данных микросервиса управления воротами", "", "PostgeSQL")
+
+    '     Rel_L(gate_mcs, gate_mcs_db, "Запись/чтение данных")
+    ' }
+    Container(light_system, "Сервис управления освещением") 
+    ' {
+    '     Container(light_mcs, "Микросервис управления освещением", "Обрабатывает запросы на управление освещением", "Spring Boot")
+    '     ContainerDb(light_mcs_db, "База данных микросервиса управления освещением", "", "PostgeSQL")
+
+    '     Rel_L(light_mcs, light_mcs_db, "Запись/чтение данных")
+    ' }
+    Container(surv_system, "Сервис управления видеонаблюдением") 
+    ' {
+    '     Container(surv_mcs, "Микросервис управления видеонаблюдением", "Обрабатывает запросы на управление видеонаблюдением", "Spring Boot")
+    '     ContainerDb(surv_mcs_db, "База данных микросервиса управлениями видеонаблюдением", "", "PostgeSQL")
+
+    '     Rel_L(surv_mcs, surv_mcs_db, "Запись/чтение данных")
+    ' }
+    Container(temp_sensor_system, "Сервис управления температурными датчиками") 
+    ' {
+    '     Container(temp_sensor_mcs, "Микросервис управления температурными датчиками", "Обрабатывает запросы на синхронизацию температуры с датчиков", "Spring Boot")
+    '     ContainerDb(temp_sensor_mcs_db, "База данных микросервиса управлениями температурными датчиками", "", "PostgeSQL")
+
+    '     Rel_L(temp_sensor_mcs, temp_sensor_mcs_db, "Запись/чтение данных")
+    ' }
+    ContainerQueue(kafka_bus, "Kafka Bus", "Используется для обмена сообщениями между сервисами")
+
+    ' Rel(profile_mcs, kafka_bus, "Сообщение для синхронизации состояния")
+    Rel_U(heating_system, kafka_bus, "Сообщение для синхронизации состояния")
+    Rel_U(gate_system, kafka_bus, "Сообщение для синхронизации состояния")
+    Rel_U(light_system, kafka_bus, "Сообщение для синхронизации состояния")
+    Rel_U(surv_system, kafka_bus, "Сообщение для синхронизации состояния")
+    Rel_U(temp_sensor_system, kafka_bus, "Сообщение для синхронизации состояния")
+}
+
+System_Ext(heating_system_ext, "Устройства управления отоплением")
+System_Ext(gate_system_ext, "Устройства управления воротами")
+System_Ext(light_system_ext, "Устройства управления светом")
+System_Ext(surv_system_ext, "Устройства управления видеонаблюдением")
+System_Ext(temp_sensor_system_ext, "Датчики температуры")
+
+
+Rel(user, web_app, "Действие пользователя")
+Rel(web_app, api_gw, "Запрос в API Gateway для выполнения действия пользователя")
+
+Rel(api_gw, profile_system, "Запрос на управление пользователем")
+Rel(api_gw, heating_system, "Запрос на управление отоплением")
+Rel(api_gw, gate_system, "Запрос на управление воротами")
+Rel(api_gw, light_system, "Запрос на управление освещением")
+Rel(api_gw, temp_sensor_system, "Запрос на управление освещением")
+Rel(api_gw, surv_system, "Запрос на управление видеонаблюдением")
+
+Rel(heating_system, heating_system_ext, "Запрос на управление отоплением")
+Rel(gate_system, gate_system_ext, "Запрос на управление воротами")
+Rel(light_system, light_system_ext, "Запрос на управление освещением")
+Rel(surv_system, surv_system_ext, "Запрос на управление видеонаблюдением")
+Rel_U(temp_sensor_system_ext, temp_sensor_system, "Запрос на управление освещением")
+
+@enduml
