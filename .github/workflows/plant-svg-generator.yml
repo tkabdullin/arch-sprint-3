@@ -19,3 +19,5 @@ jobs:
       with:
         path: diagrams
         message: "Render PlantUML files"
+env:
+  GITHUB_TOKEN: ${{github.token}}
