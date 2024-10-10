@@ -4,13 +4,33 @@ info:
   description: API для управления умным домом
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/api
+  - url: http://localhost:8080/api/v1
     description: Локальный сервер
-
+tags:
+  - name: users_mgmt
+  - name: device_mgmt
+  - name: telemetry
 paths:
   /users:
     get:
       summary: Получить список пользователей
+      operationId: getUsers
+      tags:
+        - users_mgmt
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            example: test@test.com
+          description: email пользователя
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: active
       responses:
         '200':
           description: Успешный ответ
@@ -19,16 +39,19 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/UserResponse'
 
     post:
       summary: Создать нового пользователя
+      operationId: createUser
+      tags:
+        - users_mgmt
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
       responses:
         '201':
           description: Пользователь успешно создан
@@ -36,6 +59,9 @@ paths:
   /users/{id}:
     get:
       summary: Получить пользователя по ID
+      operationId: getUser
+      tags:
+        - users_mgmt
       parameters:
         - name: id
           in: path
@@ -48,220 +74,308 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
 
     put:
       summary: Обновить пользователя по ID
+      operationId: updateUser
+      tags:
+        - users_mgmt
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserResponse'
       responses:
-        '200':
+        '201':
           description: Пользователь успешно обновлен
 
     delete:
       summary: Удалить пользователя по ID
+      operationId: deleteUser
+      tags:
+        - users_mgmt
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
       responses:
         '204':
           description: Пользователь успешно удален
-
-  /heating-systems:
+  /users/{id}/houses:
     get:
-      summary: Получить список систем отопления
-      responses:
-        '200':
-          description: Успешный ответ
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/HeatingSystem'
-
-    post:
-      summary: Создать новую систему отопления
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/HeatingSystem'
-      responses:
-        '201':
-          description: Система отопления успешно создана
-
-  /heating-systems/{id}:
-    get:
-      summary: Получить систему отопления по ID
+      summary: Получить список домов пользователя
+      tags:
+        - users_mgmt
+      operationId: getHouses
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
+        - name: address
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
-          description: Успешный ответ
+          description: Найдены дома пользователя
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HeatingSystem'
-
+                $ref: '#/components/schemas/UserHousesResponse'
+    post:
+      summary: Создать дом под пользователем
+      tags:
+        - users_mgmt
+      operationId: createHouse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserHouseRequest'
+      responses:
+        '201':
+          description: Дом под клиентом успешно создан
+  /users/{userId}/houses/[houseId]:
+    get: 
+      summary: Получить информацию об определенном доме пользователя
+      tags:
+        - users_mgmt
+      operationId: getHouse
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: houseId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Информация о доме пользователя получена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserHouseRequest'
     put:
-      summary: Обновить систему отопления по ID
+      summary: Обновить информацию о доме пользователя
+      tags:
+        - users_mgmt
+      operationId: updateHouse
       parameters:
-        - name: id
+        - name: userId
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
+        - name: houseId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HeatingSystem'
+              $ref: '#/components/schemas/UserHouseRequest'
       responses:
-        '200':
-          description: Система отопления успешно обновлена
-
+        '201':
+          description: Данные дома пользователя обновлены
     delete:
-      summary: Удалить систему отопления по ID
+      summary: Удалить информацию о доме пользователя
+      tags:
+        - users_mgmt
+      operationId: updateHouse
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: houseId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Данные дома пользователя удалены
+  /devices:
+    get:
+      summary: Получить список девайсов
+      tags:
+        - device_mgmt
+      operationId: getDevices
+      parameters:
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: serial_number
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список девайсов получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+    post:
+      summary: Создать девайс
+      tags:
+        - device_mgmt
+      operationId: createDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRequest'
+      responses:
+        '201':
+          description: Девайс создан
+  /devices/{id}:
+    get:
+      summary: Получить информацию о девайсе
+      tags:
+        - device_mgmt
+      operationId: getDevice
       parameters:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: Система отопления успешно удалена
-
-  /gates:
-    get:
-      summary: Получить список ворот
+          schema: 
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Успешный ответ
+          description: Данные о девайсе получены
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Gate'
-
-    post:
-      summary: Создать новые ворота
+              schema: 
+                $ref: '#/components/schemas/DeviceResponse'
+    put:
+      summary: Обновить данные девайса
+      tags:
+        - device_mgmt
+      operationId: updateDevice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Gate'
+              $ref: '#/components/schemas/DeviceRequest'
       responses:
         '201':
-          description: Ворота успешно созданы
-
-  /lights:
+          description: Данные девайса обновлены
+    delete:
+      summary: Удалить девайс
+      tags:
+        - device_mgmt
+      operationId: deleteDevice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Девайс удален
+  /devices/{id}/telemetry:
     get:
-      summary: Получить список светильников
+      summary: Получить данные телеметрии по девайсу
+      tags:
+        - telemetry 
+      operationId: getDeviceTelemetry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Успешный ответ
+          description: Данные телеметрии девайса получены
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Light'
-
-    post:
-      summary: Создать новый светильник
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Light'
-      responses:
-        '201':
-          description: Светильник успешно создан
-
-  /surveillance-cameras:
-    get:
-      summary: Получить список камер наблюдения
-      responses:
-        '200':
-          description: Успешный ответ
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Camera'
-
-    post:
-      summary: Создать новую камеру наблюдения
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Camera'
-      responses:
-        '201':
-          description: Камера наблюдения успешно создана
-
-  /temperature-sensors:
-    get:
-      summary: Получить список датчиков температуры
-      responses:
-        '200':
-          description: Успешный ответ
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TemperatureSensor'
-
-    post:
-      summary: Создать новый датчик температуры
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TemperatureSensor'
-      responses:
-        '201':
-          description: Датчик температуры успешно создан
-
+              schema: 
+                $ref: '#/components/schemas/DeviceTelemetryResponse'
 components:
   schemas:
-    User:
+    UserRequest:
       type: object
       properties:
-        id:
-          type: integer
         email:
           type: string
-        password:
+    UserResponse:  
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
           type: string
         createdAt:
           type: string
@@ -269,29 +383,64 @@ components:
         updatedAt:
           type: string
           format: date-time
-
-    HeatingSystem:
+        status:
+          type: string
+    UserHouseRequest:
       type: object
       properties:
-        id:
-          type: integer
-        isOn:
-          type: boolean
-        targetTemperature:
-          type: number
+        address:
+          type: string
+    UserHousesResponse:
+      type: object
+      properties:
+        id: 
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        address:
+          type: string
+        createdAt: 
+          type: string
+          format: data-time
+        updatedAt:
+          type: string
+          format: data-time
+        status:
+          type: string
+    DeviceRequest:
+      type: object
+      properties:
         currentTemperature:
-          type: number
-        createdAt:
+          type: integer
+        brightness:
+          type: integer
+        isOpen:
+          type: boolean
+        deviceType:
           type: string
-          format: date-time
-        updatedAt:
+        name: 
           type: string
-          format: date-time
-
-    Gate:
+        serialNumber:
+          type: string
+    DeviceResponse:
       type: object
       properties:
         id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: string
+        houseId: 
+          type: string
+          format: uuid
+        status:
+          type: string
+        currentTemperature:
+          type: integer
+        brightness:
           type: integer
         isOpen:
           type: boolean
@@ -301,49 +450,30 @@ components:
         updatedAt:
           type: string
           format: date-time
-
-    Light:
+        deviceType:
+          type: string
+        name: 
+          type: string
+        serialNumber:
+          type: string
+    DeviceTelemetryResponse:
       type: object
       properties:
         id:
-          type: integer
-        isOn:
-          type: boolean
+          type: string
+          format: uuid
+        deviceId: 
+          type: string
+          format: uuid
+        houseId:
+          type: string
+          format: uuid
         brightness:
-          type: number
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    Camera:
-      type: object
-      properties:
-        id:
-          type: integer
-        isActive:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    TemperatureSensor:
-      type: object
-      properties:
-        id:
           type: integer
         currentTemperature:
-          type: number
-        isActive:
+          type: integer
+        isOpen:
           type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+        videoData:
+          type: object
+          format: json

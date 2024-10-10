@@ -1,73 +1,68 @@
 @startuml
-package user_package as "Сервис управления пользователямми" {
+package user_package as "Микросервис управления пользователямми" {
     entity user {
         * id
         email
         password
-        createdAt
-        updatedAt
+        created_at
+        updated_at
+        status
     }
     
-    entity role {
+    entity house {
         * id
-        name
+        user_id [FK to user.id]
+        address
+        created_at
+        updated_at
+        status
+
     }
-    
-    entity user_role {
-        * user_id [FK]
-        * role_id [FK]
-    }
-    user --{ user_role
-    role --{ user_role
+    user --{ house
+
 }
 
-package heating_package as "Сервис управления отоплением" {
-    entity heating_system {
+package device_package as "Микросервис управления устройствами" {
+    entity device {
         * id
-        isOn
-        targetTemperature
-        currentTemperature
-        createdAt
-        updatedAt
-    }
-}
-
-package gate_package as "Сервис управления воротами" {
-    entity gate {
-        * id
-        isOpen
-        createdAt
-        updatedAt
-    }
-}
-
-package light_package as "Сервис управления освещением" {
-    entity light {
-        * id
-        isOn
+        user_id [FK to user.id]
+        house_id [FK to house.id]
+        status
+        current_temperature
         brightness
-        createdAt
-        updatedAt
+        isOpen
+        created_at
+        updated_at
+        device_type_code [FK to device_type.code]
+        name
+        serial_number
+    }
+
+    entity device_type {
+        * id
+        code 
+        description
+        status
+    }
+
+    device --* device_type
+}
+
+package telemetry as "Микросервис телеметрии" {
+    entity telemetry_data {
+        * id
+        device_id
+        house_id
+        brightness
+        current_temperature
+        isOn
+        video_data
     }
 }
 
-package surveillance_package as "Сервис управления видеонаблюдением" {
-    entity camera {
-        * id
-        isActive
-        createdAt
-        updatedAt
-    }
-}
+house -L-{ device
+user -L-{ device
 
-package temperature_sensor_package as "Сервис датчиков температуры" {
-    entity temperature_sensor {
-        * id
-        currentTemperature
-        isActive
-        createdAt
-        updatedAt
-    }
-}
+telemetry -R-{ device
 
 @enduml

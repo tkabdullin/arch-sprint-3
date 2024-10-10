@@ -13,14 +13,11 @@ System_Boundary(homesystem, "Умный Дом") {
     Container(device_mgmt, Микросервис "Управление устройствами", "Spring Boot")
     Container(telemetry, Микросервис "Телеметрия", "Spring Boot")
 
-    Container(monolith, "Текущая функциональность монолита для управления отоплением", "Spring Boot")
-
     Rel_D(user, web_app, "")
     Rel_D(web_app, api_gw, "Вызов необходимого API-метода")
     Rel_D(api_gw, user_mgmt, "Синхронный вызов API-метода для регистрации/управления пользователя")
     Rel_D(api_gw, telemetry, "Синхронный вызов API для получения информации с датчиков в доме")
     Rel_D(api_gw, device_mgmt, "Синхронный вызов API для регистрации/управления устройства пользователем")
-    Rel_L(device_mgmt, monolith, "Синхронный вызов API для управления отоплением или получения информации об отоплении")
 }
 
 System_Ext(heating_system_ext, "Система отопления в доме", "")
@@ -28,7 +25,7 @@ System_Ext(light_system_ext, "Система освещения в доме", ""
 System_Ext(gate_system_ext, "Система управления воротами в доме", "")
 System_Ext(video_system_ext, "Система видеонаблюдения в доме", "")
 
-Rel_D(monolith, heating_system_ext, "Команда на управление отоплением")
+Rel_D(device_mgmt, heating_system_ext, "Команда на управление отоплением")
 Rel_D(telemetry, heating_system_ext, "Чтение данных")
 Rel_D(device_mgmt, light_system_ext, "Команда на управление освещением")
 Rel_D(telemetry, light_system_ext, "Чтение данных")

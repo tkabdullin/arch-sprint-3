@@ -1,197 +1,74 @@
 @startuml
 
-package "Сервис управления пользователями" as profile_mcs {
+package "Микросервис управления пользователями" as uset_mgmt {
     class UserController {
-        +getUser()
-        +createUser()
-        +updateUser()
-        +deleteUser()
+        +getUser(long userId)
+        +getUsers(email, name)
+        +createUser(email, name)
+        +updateUser(long userId)
+        +deleteUser(long userId)
+        +getHouse(long houseId)
+        +createHouse(long userId, string address)
+        +updateHouse(long houseId)
+        +deleteHouse(long houseId)
     }
     class UserServiceImpl {
-        +getUser()
-        +createUser()
-        +updateUser()
-        +deleteUser()
+        +getUser(long userId)
+        +getUsers(email, name)
+        +createUser(email, name)
+        +updateUser(long userId)
+        +deleteUser(long userId)
+        +getHouse(long houseId)
+        +createHouse(long userId, string address)
+        +updateHouse(long houseId)
+        +deleteHouse(long houseId))
     }
     interface UserService {
-        +getUser()
-        +createUser()
-        +updateUser()
-        +deleteUser()
-    }
-    class UserRepository {
-        +findById()
-        +findByData()
-        +save()
-        +deleteById()
-    }
-    class User {
-        some_data
+        +getUser(long userId)
+        +getUsers(email, name)
+        +createUser(email, name)
+        +updateUser(long userId)
+        +deleteUser(long userId)
+        +getHouse(long houseId)
+        +createHouse(long userId, string address)
+        +updateHouse(long houseId)
+        +deleteHouse(long houseId))
     }
 
     UserController --> UserService
     UserService --> UserServiceImpl
-    UserServiceImpl --> UserRepository
-    UserRepository -> User
+
 }
 
-package "Сервис управления отоплением" as heating_mcs {
-    class HeatingController {
-        +getHeatingSystem()
-        +updateHeatingSystem()     
-        +turnOn()                                          
-        +turnOff()                                         
-        +setTargetTemperature()      
-        +getCurrentTemperature()
+package "Микросервис управления устройствами" as device_mcs {
+    class DeviceController {
+        +getDevice(long deviceId))
+        +createDevice(long houseId, long userId)
+        +updateDevice(long deviceId)
+        +deleteDevice(long deviceId)
+        +setTargetTemperature(long deviceId, integer temperature)
+        +getCurrentTemperature(long deviceId)
     }
-    class HeatingServiceImpl {
-        +getHeatingSystem()
-        +updateHeatingSystem()     
-        +turnOn()                                          
-        +turnOff()                                         
-        +setTargetTemperature()      
-        +getCurrentTemperature()
+    class DeviceServiceImpl {
+        +getDevice(long deviceId))
+        +createDevice(long houseId, long userId)
+        +updateDevice(long deviceId)
+        +deleteDevice(long deviceId)
+        +setTargetTemperature(long deviceId, integer temperature)
+        +getCurrentTemperature(long deviceId)
     }
-    interface HeatingService {
-        +getHeatingSystem()
-        +updateHeatingSystem()     
-        +turnOn()                                          
-        +turnOff()                                         
-        +setTargetTemperature()      
-        +getCurrentTemperature()
-    }
-    class HeatingRepository {
-        +findById()
-        +save()
-    }
-    class HeatingSystem {
-        some_data
+    interface DeviceService {
+        +getDevice(long deviceId))
+        +createDevice(long houseId, long userId)
+        +updateDevice(long deviceId)
+        +deleteDevice(long deviceId)
+        +setTargetTemperature(long deviceId, integer temperature)
+        +getCurrentTemperature(long deviceId)
     }
 
-    HeatingController --> HeatingService
-    HeatingService --> HeatingServiceImpl
-    HeatingServiceImpl --> HeatingRepository
-    HeatingRepository -> HeatingSystem
-}
+    DeviceController --> DeviceService
+    DeviceService --> DeviceServiceImpl
 
-package "Сервис управления воротами" as gate_mcs {
-    class GateController {
-        +openGate()                                        
-        +closeGate()                                     
-        +getGateStatus()
-    }
-    class GateServiceImpl {
-        +openGate()                                        
-        +closeGate()                                     
-        +getGateStatus()
-    }
-    interface GateService {
-        +openGate()                                        
-        +closeGate()                                     
-        +getGateStatus()
-    }
-    class GateRepository {
-        +findById()
-        +save()
-    }
-    class Gate {
-        some_data
-    }
-
-    GateController --> GateService
-    GateService --> GateServiceImpl
-    GateServiceImpl --> GateRepository
-    GateRepository -> Gate
-}
-
-package "Сервис управления освешением" as light_mcs {
-    class LightController {
-        +turnOnLight()
-        +turnOffLight()
-        +setBrightness()
-        +getLightStatus()
-    }
-    class LightServiceImpl {
-        +turnOnLight()
-        +turnOffLight()
-        +setBrightness()
-        +getLightStatus()
-    }
-    interface LightService {
-        +turnOnLight()
-        +turnOffLight()
-        +setBrightness()
-        +getLightStatus()
-    }
-    class LightRepository {
-        +findById()
-        +save()
-    }
-    class Light {
-        some_data
-    }
-
-    LightController --> LightService
-    LightService --> LightServiceImpl
-    LightServiceImpl --> LightRepository
-    LightRepository -> Light
-}
-
-package "Сервис управления видеонаблюдением" as surv_mcs {
-    class SurvController {
-        +startCamera()
-        +stopCamera()
-        +getCameraFeed()
-    }
-    class SurvServiceImpl {
-        +startCamera()
-        +stopCamera()
-        +getCameraFeed()
-    }
-    interface SurvService {
-        +startCamera()
-        +stopCamera()
-        +getCameraFeed()
-    }
-    class SurvRepository {
-        +findById()
-        +save()
-    }
-    class Surv {
-        some_data
-    }
-
-    SurvController --> SurvService
-    SurvService --> SurvServiceImpl
-    SurvServiceImpl --> SurvRepository
-    SurvRepository -> Surv
-}
-
-package "Сервис датчиков температуры" as temp_sensor_mcs {
-    class TempSensorController {
-        +getTemperature()
-        +getSensorStatus()  
-    }
-    class TempSensorServiceImpl {
-        +getTemperature()
-        +getSensorStatus()  
-    }
-    interface TempSensorService {
-        +getTemperature()
-        +getSensorStatus()  
-    }
-    class TempSensorRepository {
-        +findById()
-        +save()
-    }
-    class TempSensor {
-        some_data
-    }
-
-    TempSensorController --> TempSensorService
-    TempSensorService --> TempSensorServiceImpl
-    TempSensorServiceImpl --> TempSensorRepository
-    TempSensorRepository -> TempSensor
 }
 
 @enduml
