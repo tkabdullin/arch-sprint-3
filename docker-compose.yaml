@@ -1,0 +1,66 @@
+services:
+  users-management-mcs:
+    build:
+      context: ./users-management-mcs
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/users-mgmt-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - postgres-db
+
+  device-management-mcs:
+    build:
+      context: ./device-management-mcs
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/device-mgmt-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - postgres-db
+  smart-home-monolith:
+    build:
+      context: ./smart-home-monolith
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/smart_home
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres:latest  # Образ PostgreSQL
+    container_name: postgres-db
+    restart: always
+    environment:
+#      POSTGRES_DB: users-mgmt-db  # Название базы данных
+      POSTGRES_USER: postgres  # Имя пользователя
+      POSTGRES_PASSWORD: admin  # Пароль
+    ports:
+      - "5433:5432"  # Порт, на котором PostgreSQL будет доступен
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+#  devices-mgmt-db:
+#    image: postgres:latest  # Образ PostgreSQL
+#    container_name: devices-postgres-db
+#    restart: always
+#    environment:
+#      POSTGRES_DB: device-mgmt-db  # Название базы данных
+#      POSTGRES_USER: postgres  # Имя пользователя
+#      POSTGRES_PASSWORD: admin  # Пароль
+#    ports:
+#      - "5432:5432"  # Порт, на котором PostgreSQL будет доступен (внешний порт)
+#    volumes:
+#      - ./device-management-mcs/init.db:/docker-entrypoint-initdb.d/init.db
+
+networks:
+  default:
+    driver: bridge  # Использование сети по умолчанию
+

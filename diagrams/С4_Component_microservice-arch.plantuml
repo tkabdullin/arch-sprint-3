@@ -32,33 +32,42 @@ Enterprise_Boundary(homesystem, "Умный Дом"){
         Container(telemetry_queue_prc, "Обработчик очереди для синхронизации данных", "Spring Boot")
         
         Rel_D(telemetry_cntrl, telemetry_mcs, "")
-        Rel_R(telemetry_queue_prc, telemetry_db, "")
+        Rel_R(telemetry_queue_prc, telemetry_db, "Запись/чтение данных")
         Rel_D(telemetry_queue_prc, telemetry_queue, "")
         Rel_D(telemetry_hrvstr_mcs, telemetry_queue, "")
-        Rel_D(telemetry_mcs, telemetry_db, "Запись/чтение данных")
+        Rel_L(telemetry_mcs, telemetry_db, "Запись/чтение данных")
     }
-
-    System_Ext(heating_system_ext, "Система отопления в доме", "")
-    System_Ext(light_system_ext, "Система освещения в доме", "")
-    System_Ext(gate_system_ext, "Система управления воротами в доме", "")
-    System_Ext(video_system_ext, "Система видеонаблюдения в доме", "")
-
-    Rel(device_mcs, heating_system_ext, "Команда на управление отоплением")
-    Rel(telemetry_hrvstr_mcs, heating_system_ext, "Чтение данных")
-    Rel(device_mcs, light_system_ext, "Команда на управление освещением")
-    Rel(telemetry_hrvstr_mcs, light_system_ext, "Чтение данных")
-    Rel(device_mcs, gate_system_ext, "Команда на управление воротами")
-    Rel(telemetry_hrvstr_mcs, gate_system_ext, "Чтение данных")
-    Rel(device_mcs, video_system_ext, "Команда на управление видеонаблюдением")
-    Rel(telemetry_hrvstr_mcs, video_system_ext, "Чтение данных")
-
 
     Rel_D(user, web_app, "")
     Rel_D(web_app, api_gw, "")
     Rel_D(api_gw, user_cntrl, "")
     Rel_D(api_gw, device_cntrl, "")
     Rel(api_gw, telemetry_cntrl, "")
-    Rel(telemetry_hrvstr_mcs, device_cntrl, "")
+    ' Rel(telemetry_hrvstr_mcs, device_cntrl, "")
     Rel(user_mcs, device_cntrl, "")
+
+}
+
+Container_Boundary(external_systems, "Внешние системы управления домом") {
+    System_Ext(heating_system_ext, "Система отопления в доме", "")
+    System_Ext(light_system_ext, "Система освещения в доме", "")
+    System_Ext(gate_system_ext, "Система управления воротами в доме", "")
+    System_Ext(video_system_ext, "Система видеонаблюдения в доме", "")
+}
+
+' System_Ext(heating_system_ext, "Система отопления в доме", "")
+' System_Ext(light_system_ext, "Система освещения в доме", "")
+' System_Ext(gate_system_ext, "Система управления воротами в доме", "")
+' System_Ext(video_system_ext, "Система видеонаблюдения в доме", "")
+' lines(heating_system_ext, light_system_ext)
+
+Rel_D(device_mcs, heating_system_ext, "Команда на управление отоплением")
+Rel(telemetry_hrvstr_mcs, heating_system_ext, "Чтение данных")
+Rel_D(device_mcs, light_system_ext, "Команда на управление освещением")
+Rel(telemetry_hrvstr_mcs, light_system_ext, "Чтение данных")
+Rel_D(device_mcs, gate_system_ext, "Команда на управление воротами")
+Rel(telemetry_hrvstr_mcs, gate_system_ext, "Чтение данных")
+Rel_D(device_mcs, video_system_ext, "Команда на управление видеонаблюдением")
+Rel(telemetry_hrvstr_mcs, video_system_ext, "Чтение данных")
 
 @enduml

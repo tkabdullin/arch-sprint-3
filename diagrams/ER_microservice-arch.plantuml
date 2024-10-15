@@ -61,8 +61,7 @@ package telemetry as "Микросервис телеметрии" {
 }
 
 house -L-{ device
-user -L-{ device
 
-telemetry -R-{ device
+telemetry --{ device
 
 @enduml

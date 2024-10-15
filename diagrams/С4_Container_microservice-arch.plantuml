@@ -9,11 +9,17 @@ System_Boundary(homesystem, "Умный Дом") {
     Container(web_app, "Web приложение", "Web-адаптивное приложение для взаимодействия пользователей с устройствами умного дома")
     Container(api_gw, "API gateway")
 
-    Container(user_mgmt, Микросервис "Управление пользователями", "Spring Boot") 
+    Container(user_mgmt, Микросервис "Управление пользователями", "Spring Boot")
+    ContainerDb(user_mgmt_db, "База данных микросервиса пользователей", "PostgreSQL")
+
     Container(device_mgmt, Микросервис "Управление устройствами", "Spring Boot")
+    ContainerDb(device_mgmt_db, "База данных микросервиса устройств", "PostgreSQL")
+
     Container(telemetry, Микросервис "Телеметрия", "Spring Boot")
+    ContainerDb(telemetry_db, "База данных микросервиса телеметрии", "PostgreSQL")
 
     Container(monolith, "Текущая функциональность монолита для управления отоплением", "Spring Boot")
+    ContainerDb(mono_db, "База данных монолита", "PostgreSQL")
 
     Rel_D(user, web_app, "")
     Rel_D(web_app, api_gw, "Вызов необходимого API-метода")
@@ -21,6 +27,11 @@ System_Boundary(homesystem, "Умный Дом") {
     Rel_D(api_gw, telemetry, "Синхронный вызов API для получения информации с датчиков в доме")
     Rel_D(api_gw, device_mgmt, "Синхронный вызов API для регистрации/управления устройства пользователем")
     Rel_L(device_mgmt, monolith, "Синхронный вызов API для управления отоплением или получения информации об отоплении")
+
+    Rel_L(monolith, mono_db, "")
+    Rel_L(user_mgmt, user_mgmt_db, "")
+    Rel_L(device_mgmt, device_mgmt_db, "")
+    Rel_L(telemetry, telemetry_db, "")
 }
 
 System_Ext(heating_system_ext, "Система отопления в доме", "")

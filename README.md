@@ -87,86 +87,194 @@
 
 # Задание 2.1: Разработка MVP. Новые микросервисы и интеграция с монолитом
 
+## Инструкция для поднятия микросервисов
 
+### Установить PostgreSQL
+[Инструкция по установке](https://www.postgresql.org/docs/)
 
+### Поднять микросервисы на Docker Compose
 
+```
+docker compose up -d
+```
 
+### Проверка API
+Выполнить последовательно следующие запросы:
 
----------------------------------------
-OUTDATED
+#### Создание пользователя
+```curl
+curl --location 'http://localhost:8081/api/v1/users/1' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "test-user-1@test.com"
+}'
+```
 
+#### Проверка создания пользователя
+```curl
+curl --location 'http://localhost:8081/api/v1/users/1'
+```
 
-# Базовая настройка
+#### Создание дома
+```curl
+curl --location 'http://localhost:8081/api/v1/users/houses' \
+--header 'Content-Type: application/json' \
+--data '{
+    "userId": 1,
+    "address": "test-address-1"
+}'
+```
 
-## Запуск minikube
+#### Проверка созданного дома
+```curl
+curl --location 'http://localhost:8081/api/v1/users/1/houses/1'
+```
 
-[Инструкция по установке](https://minikube.sigs.k8s.io/docs/start/)
+#### Добавление девайса
+```curl
+curl --location 'http://localhost:8082/api/v1/devices' \
+--header 'Content-Type: application/json' \
+--data '{
+    "userId": 1,
+    "houseId": 1,
+    "deviceType": "test-device-type-1",
+    "name": "test-name-1",
+    "serialNumber": "test-serial-number-1"
+}'
+```
 
-```bash
-minikube start
+#### Проверка созданного девайса
+```curl
+curl --location 'http://localhost:8082/api/v1/devices/1'
 ```
 
 
-## Добавление токена авторизации GitHub
+[//]: # ()
+[//]: # ()
+[//]: # (---------------------------------------)
 
-[Получение токена](https://github.com/settings/tokens/new)
+[//]: # (OUTDATED)
 
-```bash
-kubectl create secret docker-registry ghcr --docker-server=https://ghcr.io --docker-username=<github_username> --docker-password=<github_token> -n default
-```
+[//]: # ()
+[//]: # ()
+[//]: # (# Базовая настройка)
 
+[//]: # ()
+[//]: # (## Запуск minikube)
 
-## Установка API GW kusk
+[//]: # ()
+[//]: # ([Инструкция по установке]&#40;https://minikube.sigs.k8s.io/docs/start/&#41;)
 
-[Install Kusk CLI](https://docs.kusk.io/getting-started/install-kusk-cli)
+[//]: # ()
+[//]: # (```bash)
 
-```bash
-kusk cluster install
-```
+[//]: # (minikube start)
 
+[//]: # (```)
 
-## Настройка terraform
+[//]: # ()
+[//]: # ()
+[//]: # (## Добавление токена авторизации GitHub)
 
-[Установите Terraform](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-quickstart#install-terraform)
+[//]: # ()
+[//]: # ([Получение токена]&#40;https://github.com/settings/tokens/new&#41;)
 
+[//]: # ()
+[//]: # (```bash)
 
-Создайте файл ~/.terraformrc
+[//]: # (kubectl create secret docker-registry ghcr --docker-server=https://ghcr.io --docker-username=<github_username> --docker-password=<github_token> -n default)
 
-```hcl
-provider_installation {
-  network_mirror {
-    url = "https://terraform-mirror.yandexcloud.net/"
-    include = ["registry.terraform.io/*/*"]
-  }
-  direct {
-    exclude = ["registry.terraform.io/*/*"]
-  }
-}
-```
+[//]: # (```)
 
-## Применяем terraform конфигурацию 
+[//]: # ()
+[//]: # ()
+[//]: # (## Установка API GW kusk)
 
-```bash
-cd terraform
-terraform apply
-```
+[//]: # ()
+[//]: # ([Install Kusk CLI]&#40;https://docs.kusk.io/getting-started/install-kusk-cli&#41;)
 
-## Настройка API GW
+[//]: # ()
+[//]: # (```bash)
 
-```bash
-kusk deploy -i api.yaml
-```
+[//]: # (kusk cluster install)
 
-## Проверяем работоспособность
+[//]: # (```)
 
-```bash
-kubectl port-forward svc/kusk-gateway-envoy-fleet -n kusk-system 8080:80
-curl localhost:8080/hello
-```
+[//]: # ()
+[//]: # ()
+[//]: # (## Настройка terraform)
 
+[//]: # ()
+[//]: # ([Установите Terraform]&#40;https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-quickstart#install-terraform&#41;)
 
-## Delete minikube
+[//]: # ()
+[//]: # ()
+[//]: # (Создайте файл ~/.terraformrc)
 
-```bash
-minikube delete
-```
+[//]: # ()
+[//]: # (```hcl)
+
+[//]: # (provider_installation {)
+
+[//]: # (  network_mirror {)
+
+[//]: # (    url = "https://terraform-mirror.yandexcloud.net/")
+
+[//]: # (    include = ["registry.terraform.io/*/*"])
+
+[//]: # (  })
+
+[//]: # (  direct {)
+
+[//]: # (    exclude = ["registry.terraform.io/*/*"])
+
+[//]: # (  })
+
+[//]: # (})
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## Применяем terraform конфигурацию )
+
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (cd terraform)
+
+[//]: # (terraform apply)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## Настройка API GW)
+
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (kusk deploy -i api.yaml)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## Проверяем работоспособность)
+
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (kubectl port-forward svc/kusk-gateway-envoy-fleet -n kusk-system 8080:80)
+
+[//]: # (curl localhost:8080/hello)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # ()
+[//]: # (## Delete minikube)
+
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (minikube delete)
+
+[//]: # (```)
