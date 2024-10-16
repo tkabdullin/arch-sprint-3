@@ -42,10 +42,10 @@
 Данные домены с сабдоменами были выделены на основе функциональности, которая была предоставлена в скриптах самого монолитного приложения.
 
 #### Визуальное представление доменов
-![Домены](out//initial-domens-diagram/initial-domens-diagram.png)
+![Домены](diagrams/initial-domens-diagram/initial-domens-diagram.png)
 
 ### C4 контекстная модель архитектуры монолитного приложения
-![Границы контекстов](out//monolitic-c4-context-diagram/monolitic-c4-context-diagram.png)
+![Границы контекстов](diagrams/monolitic-c4-context-diagram/monolitic-c4-context-diagram.png)
 
 ## Задание 1.2: Архитектура микросервисов
 Целевую архитектуру нового приложения для покрытия бизнес-требований было решено реализовывать на микросервисной архитектуре для лучшего потенциального горизонтального масштабирования нагруженной части приложения и будущего улучшения функциональных возможностей приложения без необходимости высчитывать и исправлять внутренние зависимости.
@@ -68,19 +68,19 @@
 |Микросервис "Управление устройствами"|Отвечает за регистрацию и управление устройствами|
 
 ### Диаграмма контейнеров для микросервисной архитектуры на этап MVP
-![Диаграмма контейнеров MVP](out//С4_Container_microservice-arch/С4_Container_microservice-arch.png)
+![Диаграмма контейнеров MVP](diagrams/С4_Container_microservice-arch/С4_Container_microservice-arch.png)
 
 ### Диаграмма контейнеров для микросервисной архитектуры TO BE
-![Диаграмма контейнеров TO BE](out//С4_Container_microservice-arch-tobe/С4_Container_microservice-arch-tobe.png)
+![Диаграмма контейнеров TO BE](diagrams/С4_Container_microservice-arch-tobe/С4_Container_microservice-arch-tobe.png)
 
 ### Диаграмма компонентов
-![Диаграмма компонентов TO BE](out//С4_Component_microservice-arch/С4_Component_microservice-arch.png)
+![Диаграмма компонентов TO BE](diagrams/С4_Component_microservice-arch/С4_Component_microservice-arch.png)
 
 ### Диаграмма кода
-![Диаграмма кода](out//C4_Code_microservice-arch/C4_Code_microservice-arch.png)
+![Диаграмма кода](diagrams/C4_Code_microservice-arch/C4_Code_microservice-arch.png)
 
 ## Задание 1.3: ER-диаграмма
-![ER-диаграмма](out//ER_microservice-arch/ER_microservice-arch.png)
+![ER-диаграмма](diagrams/ER_microservice-arch/ER_microservice-arch.png)
 
 ## Задание 1.4: Создание и документирование API
 Смоделированное API представлено в файле [api.yaml](/api.yaml)
