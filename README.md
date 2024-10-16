@@ -148,6 +148,7 @@ curl --location 'http://localhost:8082/api/v1/devices' \
 curl --location 'http://localhost:8082/api/v1/devices/1'
 ```
 
+<!-- Апдейт ридмифайла для прогрузки диаграмм -->
 
 [//]: # ()
 [//]: # ()
